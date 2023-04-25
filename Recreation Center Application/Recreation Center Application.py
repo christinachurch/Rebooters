@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from datetime import datetime
+from PIL import ImageTk, Image
 
 # Dictionaries
 landEquipment = {
@@ -67,22 +68,84 @@ class RecreationCenterApplication:
         tk.Label(page, text='Land Rentals').grid(row=0)
         tk.Button(page, text='Back', command=self.goto_page1).grid(row=1)
 
+        # Tent
+        tk.Label(page, text='Tent').grid(row=2, column=0, sticky=tk.W)
+        self.tent_var = tk.IntVar()
+        ttk.Combobox(page, textvariable=self.tent_var, values=[0,1,2,3,4,5]).grid(row=2, column=1, sticky=tk.W)
+        tk.Label(page, text=self.tent_var).grid(row=2, column=2, sticky=tk.W)
 
 
+        # Sleeping Bag
+        tk.Label(page, text='Sleeping Bag').grid(row=3, column=0, sticky=tk.W)
+        self.sleepingbag_var = tk.IntVar()
+        ttk.Combobox(page, textvariable=self.sleepingbag_var, values=[0,1,2,3,4,5]).grid(row=3, column=1, sticky=tk.W)
+        tk.Label(page, text=self.sleepingbag_var).grid(row=3, column=2, sticky=tk.W)
+
+        # Backpack
+        tk.Label(page, text='Backpack').grid(row=4, column=0, sticky=tk.W)
+        self.backpack_var = tk.IntVar()
+        ttk.Combobox(page, textvariable=self.backpack_var, values=[0,1,2,3,4,5]).grid(row=4, column=1, sticky=tk.W)
+        tk.Label(page, text=self.backpack_var).grid(row=4, column=2, sticky=tk.W)
+
+        # 2 Burner Stove
+        tk.Label(page, text='2 Burner Stove').grid(row=5, column=0, sticky=tk.W)
+        self.twoburnerstove_var = tk.IntVar()
+        ttk.Combobox(page, textvariable=self.twoburnerstove_var, values=[0,1,2,3,4,5]).grid(row=5, column=1, sticky=tk.W)
+        tk.Label(page, text=self.twoburnerstove_var).grid(row=5, column=2, sticky=tk.W)
+
+        # Lantern
+        tk.Label(page, text='Lantern').grid(row=6, column=0, sticky=tk.W)
+        self.lantern_var = tk.IntVar()
+        ttk.Combobox(page, textvariable=self.lantern_var, values=[0,1,2,3,4,5]).grid(row=6, column=1, sticky=tk.W)
+        tk.Label(page, text=self.lantern_var).grid(row=6, column=2, sticky=tk.W)
+
+        # Cook Pot Set
+        tk.Label(page, text='Cook Pot Set').grid(row=7, column=0, sticky=tk.W)
+        self.cookpotset_var = tk.IntVar()
+        ttk.Combobox(page, textvariable=self.cookpotset_var, values=[0,1,2,3,4,5]).grid(row=7, column=1, sticky=tk.W)
+        tk.Label(page, text=self.cookpotset_var).grid(row=7, column=2, sticky=tk.W)
+
+        # Water Cooler
+        tk.Label(page, text='Water Cooler').grid(row=8, column=0, sticky=tk.W)
+        self.watercooler_var = tk.IntVar()
+        ttk.Combobox(page, textvariable=self.watercooler_var, values=[0,1,2,3,4,5]).grid(row=8, column=1, sticky=tk.W)
+        tk.Label(page, text=self.watercooler_var).grid(row=8, column=2, sticky=tk.W)
+
+        # Hammock
+        tk.Label(page, text='Hammock').grid(row=9, column=0, sticky=tk.W)
+        self.hammock_var = tk.IntVar()
+        ttk.Combobox(page, textvariable=self.hammock_var, values=[0,1,2,3,4,5]).grid(row=9, column=1, sticky=tk.W)
+        tk.Label(page, text=self.hammock_var).grid(row=9, column=2, sticky=tk.W)
+
+
+    def waterRental(self):
+        page = tk.Frame(self.master)
+        page.grid()
+        tk.Label(page, text='Water Rentals').grid(row=0)
+        tk.Button(page, text='Back', command=self.goto_page1).grid(row=1)
 
     def goto_page1(self):
-        if self.pagenum == 2:
+        if self.pagenum == 2 or self.pagenum == 3:
             for widget in self.master.winfo_children():
                 widget.destroy()
             self.pagenum = 1
             self.page1()
 
     def goto_page2(self):
-        if self.pagenum == 1:
-            for widget in self.master.winfo_children():
-                widget.destroy()
-            self.pagenum = 2
-            self.page2()
+        global land_var, water_var 
+        if self.land_var == True:  
+            if self.pagenum == 1:
+                for widget in self.master.winfo_children():
+                    widget.destroy()
+                self.pagenum = 2
+                self.page2()
+        elif self.water_var == True:
+            if self.pagenum == 1:
+                for widget in self.master.winfo_children():
+                    widget.destroy()
+                self.pagenum = 3
+                self.waterRental()
+        
 
 
 if __name__ == '__main__':
