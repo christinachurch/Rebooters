@@ -1,7 +1,9 @@
 from PIL import Image, ImageTk
 import tkinter as tk
 from tkinter import ttk
-import datetime
+import tkcalendar as tkc
+from datetime import date
+
 
 
 # Dictionaries
@@ -39,6 +41,9 @@ class RecreationCenterApplication:
 
         self.pagenum = 1
         self.dateSelection()
+    
+
+
 
        
     def calculateLandCost(self, tent, sleepingbag, backpack, twoburnerstove, lantern, cookpotset, hammock, watercooler):
@@ -66,20 +71,16 @@ class RecreationCenterApplication:
 
     def dateSelection(self):
         page = tk.Frame(self.master, width=300, height=600)
-
-        
         page.grid()
+        today = date.today()
 
         tk.Label(page, text='Date Selection', font=('Arial', 16)).grid(row=0,pady= 10)
 
         tk.Label(page, text="Start Date:", font=('Arial', 14)).grid(row=2, column=0, pady= 10, sticky=tk.W)
-        self.startDate = tk.Entry(page, width=15).grid(row=2, column=1, sticky=tk.W)
-
-        '''if startDate < datetime.today():
-            tk.Label(page, text="Please enter a valid date", font=('Arial', 14)).grid(row=2, column=2, sticky=tk.W)'''
+        tkc.DateEntry(page, mindate = today, width=15).grid(row=2, column=1, pady= 10, sticky=tk.W)
 
         tk.Label(page, text="End Date:", font=('Arial', 14)).grid(row=3, column=0,pady= 10, sticky=tk.W)
-        self.endDate = tk.Entry(page, width=15).grid(row=3, column=1, pady= 10, sticky=tk.W)
+        self.endDate = tkc.DateEntry(page, mindate = today, width=15).grid(row=3, column=1, pady= 10, sticky=tk.W)
 
         self.land_var = tk.BooleanVar()
         ttk.Checkbutton(page, text="Land Rentals", variable=self.land_var).grid(row=7, column=0, pady= 20, sticky=tk.W)
@@ -98,8 +99,7 @@ class RecreationCenterApplication:
         tk.Label(page, text='Land Rentals', font=('Arial', 14, 'bold')).grid(row=0)
         tk.Button(page, text='Back', command=self.goto_page1).grid(row=11)
         tk.Button(page, text='Next Page', command=self.goto_page3).grid(row=11, column=1)
-        
-
+    
         # Tent
         tk.Label(page, text='Tent', font=('Arial', 14)).grid(row=2, column=0, sticky=tk.W)
         self.tent_var = tk.IntVar()
