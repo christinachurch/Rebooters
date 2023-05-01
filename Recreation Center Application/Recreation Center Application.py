@@ -2,7 +2,7 @@ from PIL import Image, ImageTk
 import tkinter as tk
 from tkinter import ttk
 import tkcalendar as tkc
-from datetime import date
+from datetime import date, timedelta
 
 
 
@@ -41,9 +41,7 @@ class RecreationCenterApplication:
         self.master.grid_rowconfigure(0, weight=1)
 
         self.pagenum = 1
-
-
-
+        self.cart = {}
         self.dateSelection()
     
 
@@ -53,40 +51,55 @@ class RecreationCenterApplication:
         for i in landEquipment:
             if i == 'Tent':
                 tentCost = tent * landEquipment[i]
+                self.cart['Tent'] = tentCost
             elif i == 'Sleeping Bag':
                 sleepingbagCost = sleepingbag * landEquipment[i]
+                self.cart['Sleeping Bag'] = sleepingbagCost
             elif i == 'Backpack':
                 backpackCost = backpack * landEquipment[i]
+                self.cart['Backpack'] = backpackCost
             elif i == '2 Burner Stove':
                 twoburnerstoveCost = twoburnerstove * landEquipment[i]
+                self.cart['2 Burner Stove'] = twoburnerstoveCost
             elif i == 'Lantern':
                 lanternCost = lantern * landEquipment[i]
+                self.cart['Lantern'] = lanternCost
             elif i == 'Cook Pot Set':
                 cookpotsetCost = cookpotset * landEquipment[i]
+                self.cart['Cook Pot Set'] = cookpotsetCost
             elif i == 'Water Cooler':
                 watercoolerCost = watercooler * landEquipment[i]
+                self.cart['Water Cooler'] = watercoolerCost
             elif i == 'Hammock':
                 hammockCost = hammock * landEquipment[i]
+                self.cart['Hammock'] = hammockCost
         totalLandCost = tentCost + sleepingbagCost + backpackCost + twoburnerstoveCost + lanternCost + cookpotsetCost + watercoolerCost + hammockCost
         print(totalLandCost)
-        return tentCost, sleepingbagCost, backpackCost, twoburnerstoveCost, lanternCost, cookpotsetCost, watercoolerCost, hammockCost
+        return self.cart
     
     def calculateWaterCost(self, canoe, kayak, paddleboard, pfd, paddle, drybag, drypack):
         for i in waterEquipment:
             if i == 'Canoe':
                 canoeCost = canoe * waterEquipment[i]
+                self.cart['Canoe'] = canoeCost
             elif i == 'Kayak':
                 kayakCost = kayak * waterEquipment[i]
+                self.cart['Kayak'] = kayakCost
             elif i == 'Paddle Board':
                 paddleboardCost = paddleboard * waterEquipment[i]
+                self.cart['Paddle Board'] = paddleboardCost
             elif i == 'PFD':
                 pfdCost = pfd * waterEquipment[i]
+                self.cart['PFD'] = pfdCost
             elif i == 'Paddle':
                 paddleCost = paddle * waterEquipment[i]
+                self.cart['Paddle'] = paddleCost
             elif i == 'Dry Bag':
                 drybagCost = drybag * waterEquipment[i]
+                self.cart['Dry Bag'] = drybagCost
             elif i == 'Dry Pack':
                 drypackCost = drypack * waterEquipment[i]
+                self.cart['Dry Pack'] = drypackCost
         totalWaterCost = canoeCost + kayakCost + paddleboardCost + pfdCost + paddleCost + drybagCost + drypackCost
         print(totalWaterCost)
         return canoeCost, kayakCost, paddleboardCost, pfdCost, paddleCost, drybagCost, drypackCost
@@ -108,10 +121,12 @@ class RecreationCenterApplication:
         tk.Label(page, text='Date Selection', font=('Arial', 16), fg='white', bg="#367653").grid(row=0,pady= 10)
 
         tk.Label(page, text="Start Date:", font=('Arial', 14), fg='white', bg="#367653").grid(row=2, column=0, pady= 10, sticky=tk.W)
-        tkc.DateEntry(page, mindate = today, width=15).grid(row=2, column=1, pady= 10, sticky=tk.W)
+        self.startDate = tkc.DateEntry(page, mindate = today, width=15).grid(row=2, column=1, pady= 10, sticky=tk.W)
+
+        #self.dateLimit = self.startDate + timedelta(days=1)
 
         tk.Label(page, text="End Date:", font=('Arial', 14), fg='white', bg="#367653").grid(row=3, column=0,pady= 10, sticky=tk.W)
-        self.endDate = tkc.DateEntry(page, mindate = today, width=15).grid(row=3, column=1, pady= 10, sticky=tk.W)
+        self.endDate = tkc.DateEntry(page, width=15).grid(row=3, column=1, pady= 10, sticky=tk.W)
 
         self.land_var = tk.BooleanVar()
         ttk.Checkbutton(page, text="Land Rentals", variable=self.land_var).grid(row=7, column=0, pady= 20, sticky=tk.W)
@@ -135,8 +150,7 @@ class RecreationCenterApplication:
         logo_label.grid(row=0, column=3, sticky=tk.NE)
 
         tk.Label(page, text='Land Rentals', font=('Arial', 14, 'bold'), fg='white', bg="#367653").grid(row=0)
-        tk.Button(page, text='Back', command=self.goto_page1).grid(row=11)
-        tk.Button(page, text='Next Page', command=self.goto_page3).grid(row=11, column=1)
+
     
         # Tent
         tk.Label(page, text='Tent', font=('Arial', 14), fg='white', bg="#367653").grid(row=2, column=0, sticky=tk.W)
@@ -188,8 +202,11 @@ class RecreationCenterApplication:
         ttk.Combobox(page, textvariable=self.hammock_var, values=[0,1,2,3,4,5]).grid(row=10, column=1, sticky=tk.W)
         tk.Label(page, text='$8', fg='white', bg="#367653").grid(row=10, column=2, sticky=tk.W)
 
-        self.calcLandtotal = lambda: self.calculateLandCost(self.tent_var.get(), self.sleepingbag_var.get(), self.backpack_var.get(), self.twoburnerstove_var.get(), self.lantern_var.get(), self.cookpotset_var.get(), self.watercooler_var.get(), self.hammock_var.get())
+        self.calcLandTotal = lambda: [self.goto_page3, self.calculateLandCost(self.tent_var.get(), self.sleepingbag_var.get(), self.backpack_var.get(), self.twoburnerstove_var.get(), self.lantern_var.get(), self.cookpotset_var.get(), self.watercooler_var.get(), self.hammock_var.get())]
         tk.Button(page, text='Calculate', command=self.calcLandTotal).grid(row=11, column=2)
+        tk.Button(page, text='Back', command=self.goto_page1).grid(row=11)
+        tk.Button(page, text='Next Page', command=self.goto_page3).grid(row=11, column=1)
+
 
 
 # Function that creates the water rental page
@@ -259,19 +276,34 @@ class RecreationCenterApplication:
     def transactionSummaryPage(self):
         page = tk.Frame(self.master, bg="#367653")
         page.grid()
+        total = 0
 
         img = Image.open("Rec Logo.png")
         img = img.resize((100, 100), Image.LANCZOS)  # Resize the image
         img_tk = ImageTk.PhotoImage(img)
         logo_label = tk.Label(page, image=img_tk)
         logo_label.image = img_tk 
-        logo_label.grid(row=0, column=3, sticky=tk.NE)
+        logo_label.grid(row=0, column=2, sticky=tk.NE)
                 
         tk.Label(page, text='Transaction Summary', font=('Arial', 14, 'bold'), fg='white', bg="#367653").grid(row=0)
-        tk.Button(page, text='Back', command=self.goto_page2).grid(row=11)
-        tk.Label(page, text=f'Start Date: {self.startDate}').grid(row=11, column=1)
-        tk.Label(page, text=f'End Date: {self.endDate}').grid(row=11, column=2)
-        tk.Label(page, text=self.calcTotal)
+        rownum = 1
+        for key, value in self.cart.items():
+            if value != 0:
+                tk.Label(page, text=f'{key} : ${value}', font=('Arial', 14), fg='white', bg="#367653").grid(row=rownum, sticky=tk.W)
+                rownum += 1
+                total += value
+            else:
+                pass
+        # Tax Calculation
+        total *= 1.085
+        tk.Label(page, text=f'Total: ${total}', font=('Arial', 14, 'bold'), fg='white', bg="#367653").grid(row=rownum, sticky=tk.W)
+
+
+        tk.Button(page, text='Back', command=self.goto_page2).grid(row=rownum + 1)
+        tk.Label(page, text=f'Start Date: {self.startDate}').grid(row=rownum+1, column=1)
+        tk.Label(page, text=f'End Date: {self.endDate}').grid(row=rownum+1, column=2)
+        print(self.cart)
+        
         # tk.Button(page, text='Submit', command=self.goto_page4).grid(row=11, column=1)
 
     #-------------------------Next Page Functions-----------------------------------    
